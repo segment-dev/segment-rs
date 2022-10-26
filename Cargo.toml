@@ -2,7 +2,7 @@
 name = "segment"
 version = "0.0.1-alpha.1"
 edition = "2021"
-licence = "MIT"
+license-file = "LICENSE"
 description = "Official Rust client for the Segment server"
 repository = "https://github.com/segment-dev/segment-rs"
 readme = "README.md"
