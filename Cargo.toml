@@ -1,12 +1,12 @@
 [package]
-name = "segment"
-version = "0.0.1-alpha.1"
+name = "segment-rs"
+version = "0.0.1-alpha.3"
 edition = "2021"
-license-file = "LICENSE"
+license = "MIT"
 description = "Official Rust client for the Segment server"
 repository = "https://github.com/segment-dev/segment-rs"
 readme = "README.md"
-keywords = ["segment", "cache", "tcp", "client", "server"]
+keywords = ["segment", "cache", "tcp", "client"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

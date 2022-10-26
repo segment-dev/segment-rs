@@ -49,7 +49,7 @@ impl Command {
     }
 
     /// Pushes an arg to command's arg vec
-    pub fn arg<T: ToSegmentFrame>(mut self, arg: T) -> Self {
+    pub fn arg<T: ToSegmentFrame>(&mut self, arg: T) -> &mut Self {
         self.args.push(arg.to_segment_frame());
         self
     }
