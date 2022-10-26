@@ -1,0 +1,17 @@
+[package]
+name = "segment"
+version = "0.0.1-alpha.1"
+edition = "2021"
+licence = "MIT"
+description = "Official Rust client for the Segment server"
+repository = "https://github.com/segment-dev/segment-rs"
+readme = "README.md"
+keywords = ["segment", "cache", "tcp", "client", "server"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tokio = { version = "1", features = ["net", "io-util"] }
+thiserror = "1.0.37"
+bytes = "1.2.1"
+atoi = "2.0.0"
