@@ -168,6 +168,21 @@ impl ToSegmentFrame for &str {
     }
 }
 
+impl ToSegmentFrame for Bytes {
+    fn to_segment_frame(&self) -> Frame {
+        Frame::String(self.clone())
+    }
+}
+
+impl<T: ToSegmentFrame> ToSegmentFrame for Option<T> {
+    fn to_segment_frame(&self) -> Frame {
+        if let Some(val) = self {
+            return T::to_segment_frame(val);
+        }
+        Frame::Null
+    }
+}
+
 impl FromSegmentFrame for u8 {
     fn from_segment_frame(frame: &Frame) -> Result<Self, CommandError> {
         match frame {
@@ -291,6 +306,15 @@ impl FromSegmentFrame for Bytes {
         match frame {
             Frame::String(val) => Ok(val.clone()),
             _ => Err(CommandError::IncompatibleType),
+        }
+    }
+}
+
+impl<T: FromSegmentFrame> FromSegmentFrame for Option<T> {
+    fn from_segment_frame(frame: &Frame) -> Result<Self, CommandError> {
+        match frame {
+            Frame::Null => Ok(None),
+            _ => Ok(Some(T::from_segment_frame(frame)?)),
         }
     }
 }
