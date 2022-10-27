@@ -318,3 +318,18 @@ impl<T: FromSegmentFrame> FromSegmentFrame for Option<T> {
         }
     }
 }
+
+impl<T: FromSegmentFrame> FromSegmentFrame for Vec<T> {
+    fn from_segment_frame(frame: &Frame) -> Result<Self, CommandError> {
+        let mut vec = Vec::new();
+        match frame {
+            Frame::Array(array) => {
+                for v in array {
+                    vec.push(T::from_segment_frame(v)?);
+                }
+                Ok(vec)
+            }
+            _ => Err(CommandError::IncompatibleType),
+        }
+    }
+}
