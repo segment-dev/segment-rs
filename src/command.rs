@@ -1,6 +1,8 @@
 use crate::connection::{Connection, ConnectionError};
 use crate::frame::Frame;
 use bytes::Bytes;
+use std::collections::HashMap;
+use std::hash::Hash;
 use std::str::{self, Utf8Error};
 use thiserror::Error;
 
@@ -34,12 +36,16 @@ pub enum CommandError {
     Utf8Error(#[from] Utf8Error),
 
     /// Represents an error returned by the segment server
-    #[error("segment: {0}")]
+    #[error("{0}")]
     QueryError(String),
 
     /// Represents a connection error
     #[error(transparent)]
     ConnectionError(#[from] ConnectionError),
+
+    /// Represents a frame decoding error
+    #[error("failed to decode the frame")]
+    Decode,
 }
 
 impl Command {
@@ -180,6 +186,18 @@ impl<T: ToSegmentFrame> ToSegmentFrame for Option<T> {
             return T::to_segment_frame(val);
         }
         Frame::Null
+    }
+}
+
+impl<K: ToSegmentFrame, V: ToSegmentFrame> ToSegmentFrame for HashMap<K, V> {
+    fn to_segment_frame(&self) -> Frame {
+        let mut map = Vec::with_capacity(2 * self.len());
+        for (key, value) in self.iter() {
+            map.push(key.to_segment_frame());
+            map.push(value.to_segment_frame());
+        }
+
+        Frame::Map(map)
     }
 }
 
@@ -328,6 +346,37 @@ impl<T: FromSegmentFrame> FromSegmentFrame for Vec<T> {
                     vec.push(T::from_segment_frame(v)?);
                 }
                 Ok(vec)
+            }
+            _ => Err(CommandError::IncompatibleType),
+        }
+    }
+}
+
+impl<K, V> FromSegmentFrame for HashMap<K, V>
+where
+    K: FromSegmentFrame + Eq + Hash,
+    V: FromSegmentFrame,
+{
+    fn from_segment_frame(frame: &Frame) -> Result<Self, CommandError> {
+        match frame {
+            Frame::Map(map) => {
+                let len = map.len();
+                if len % 2 != 0 {
+                    return Err(CommandError::Decode);
+                }
+                let mut result = HashMap::with_capacity(len / 2);
+                let mut idx = 0;
+
+                while idx < len - 1 {
+                    let key = K::from_segment_frame(&map[idx])?;
+                    idx += 1;
+                    let value = V::from_segment_frame(&map[idx])?;
+                    idx += 1;
+
+                    result.insert(key, value);
+                }
+
+                Ok(result)
             }
             _ => Err(CommandError::IncompatibleType),
         }
