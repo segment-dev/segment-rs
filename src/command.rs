@@ -361,6 +361,9 @@ where
         match frame {
             Frame::Map(map) => {
                 let len = map.len();
+                if len == 0 {
+                    return Ok(HashMap::new());
+                }
                 if len % 2 != 0 {
                     return Err(CommandError::Decode);
                 }
