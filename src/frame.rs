@@ -55,6 +55,22 @@ pub enum ParseFrameError {
     InvalidFormat,
 }
 
+impl Frame {
+    /// Returns the name of the enum as a &'static str
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            Frame::String(_) => {"frame::String"}
+            Frame::Integer(_) => {"frame::Integer"}
+            Frame::Array(_) => {"frame::Array"}
+            Frame::Boolean(_) => {"frame::Boolean"}
+            Frame::Null => {"frame::StrNull"}
+            Frame::Map(_) => {"frame::Map"}
+            Frame::Double(_) => {"frame::Double"}
+            Frame::Error(_) => {"frame::Error"}
+        }
+    }
+}
+
 /// Parses the buffered data into frames
 pub fn parse(buf: &mut Cursor<&[u8]>) -> Result<Frame, ParseFrameError> {
     let line = get_line(buf)?;

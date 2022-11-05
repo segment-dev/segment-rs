@@ -207,7 +207,7 @@ impl FromSegmentFrame for u8 {
         match frame {
             Frame::Integer(val) => Ok(*val as u8),
             Frame::Double(val) => Ok(*val as u8),
-            _ => Err(CommandError::IncompatibleType(type_name::<frame>(), type_name::<Self>())),
+            other => Err(CommandError::IncompatibleType(other.as_str(), type_name::<Self>())),
         }
     }
 }
@@ -217,7 +217,7 @@ impl FromSegmentFrame for i8 {
         match frame {
             Frame::Integer(val) => Ok(*val as i8),
             Frame::Double(val) => Ok(*val as i8),
-            _ => Err(CommandError::IncompatibleType(type_name::<frame>(), type_name::<Self>())),
+            other => Err(CommandError::IncompatibleType(other.as_str(), type_name::<Self>())),
         }
     }
 }
@@ -227,7 +227,7 @@ impl FromSegmentFrame for u16 {
         match frame {
             Frame::Integer(val) => Ok(*val as u16),
             Frame::Double(val) => Ok(*val as u16),
-            _ => Err(CommandError::IncompatibleType(type_name::<frame>(), type_name::<Self>())),
+            other => Err(CommandError::IncompatibleType(other.as_str(), type_name::<Self>())),
         }
     }
 }
@@ -237,7 +237,7 @@ impl FromSegmentFrame for i16 {
         match frame {
             Frame::Integer(val) => Ok(*val as i16),
             Frame::Double(val) => Ok(*val as i16),
-            _ => Err(CommandError::IncompatibleType(type_name::<frame>(), type_name::<Self>())),
+            other => Err(CommandError::IncompatibleType(other.as_str(), type_name::<Self>())),
         }
     }
 }
@@ -247,7 +247,7 @@ impl FromSegmentFrame for u32 {
         match frame {
             Frame::Integer(val) => Ok(*val as u32),
             Frame::Double(val) => Ok(*val as u32),
-            _ => Err(CommandError::IncompatibleType(type_name::<frame>(), type_name::<Self>())),
+            other => Err(CommandError::IncompatibleType(other.as_str(), type_name::<Self>())),
         }
     }
 }
@@ -257,7 +257,7 @@ impl FromSegmentFrame for i32 {
         match frame {
             Frame::Integer(val) => Ok(*val as i32),
             Frame::Double(val) => Ok(*val as i32),
-            _ => Err(CommandError::IncompatibleType(type_name::<frame>(), type_name::<Self>())),
+            other => Err(CommandError::IncompatibleType(other.as_str(), type_name::<Self>())),
         }
     }
 }
@@ -267,7 +267,7 @@ impl FromSegmentFrame for u64 {
         match frame {
             Frame::Integer(val) => Ok(*val as u64),
             Frame::Double(val) => Ok(*val as u64),
-            _ => Err(CommandError::IncompatibleType(type_name::<frame>(), type_name::<Self>())),
+            other => Err(CommandError::IncompatibleType(other.as_str(), type_name::<Self>())),
         }
     }
 }
@@ -277,7 +277,7 @@ impl FromSegmentFrame for i64 {
         match frame {
             Frame::Integer(val) => Ok(*val),
             Frame::Double(val) => Ok(*val as i64),
-            _ => Err(CommandError::IncompatibleType(type_name::<frame>(), type_name::<Self>())),
+            other => Err(CommandError::IncompatibleType(other.as_str(), type_name::<Self>())),
         }
     }
 }
@@ -287,7 +287,7 @@ impl FromSegmentFrame for f32 {
         match frame {
             Frame::Integer(val) => Ok(*val as f32),
             Frame::Double(val) => Ok(*val as f32),
-            _ => Err(CommandError::IncompatibleType(type_name::<frame>(), type_name::<Self>())),
+            other => Err(CommandError::IncompatibleType(other.as_str(), type_name::<Self>())),
         }
     }
 }
@@ -297,7 +297,7 @@ impl FromSegmentFrame for f64 {
         match frame {
             Frame::Integer(val) => Ok(*val as f64),
             Frame::Double(val) => Ok(*val),
-            _ => Err(CommandError::IncompatibleType(type_name::<frame>(), type_name::<Self>())),
+            other => Err(CommandError::IncompatibleType(other.as_str(), type_name::<Self>())),
         }
     }
 }
@@ -306,7 +306,7 @@ impl FromSegmentFrame for bool {
     fn from_segment_frame(frame: &Frame) -> Result<Self, CommandError> {
         match frame {
             Frame::Boolean(val) => Ok(*val),
-            _ => Err(CommandError::IncompatibleType(type_name::<frame>(), type_name::<Self>())),
+            other => Err(CommandError::IncompatibleType(other.as_str(), type_name::<Self>())),
         }
     }
 }
@@ -315,7 +315,7 @@ impl FromSegmentFrame for String {
     fn from_segment_frame(frame: &Frame) -> Result<Self, CommandError> {
         match frame {
             Frame::String(val) => Ok(str::from_utf8(&val[..])?.to_string()),
-            _ => Err(CommandError::IncompatibleType(type_name::<frame>(), type_name::<Self>())),
+            other => Err(CommandError::IncompatibleType(other.as_str(), type_name::<Self>())),
         }
     }
 }
@@ -324,7 +324,7 @@ impl FromSegmentFrame for Bytes {
     fn from_segment_frame(frame: &Frame) -> Result<Self, CommandError> {
         match frame {
             Frame::String(val) => Ok(val.clone()),
-            _ => Err(CommandError::IncompatibleType(type_name::<frame>(), type_name::<Self>())),
+            other => Err(CommandError::IncompatibleType(other.as_str(), type_name::<Self>())),
         }
     }
 }
@@ -348,7 +348,7 @@ impl<T: FromSegmentFrame> FromSegmentFrame for Vec<T> {
                 }
                 Ok(vec)
             }
-            _ => Err(CommandError::IncompatibleType(type_name::<frame>(), type_name::<Self>())),
+            other => Err(CommandError::IncompatibleType(other.as_str(), type_name::<Self>())),
         }
     }
 }
@@ -382,7 +382,7 @@ where
 
                 Ok(result)
             }
-            _ => Err(CommandError::IncompatibleType(type_name::<frame>(), type_name::<Self>())),
+            other => Err(CommandError::IncompatibleType(other.as_str(), type_name::<Self>())),
         }
     }
 }
